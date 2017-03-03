@@ -3,6 +3,11 @@ from pprint import pprint
 
 
 class MobotixConfigSection:
+    """
+    Defines a section from a Mobotix camera configuration file
+    Each section is a key=value pair
+    This version currently does not handle the JSON sections.
+    """
     def __init__(self, name, items):
         self.name = name.strip()
         self.items = {}
@@ -15,6 +20,12 @@ class MobotixConfigSection:
 
 
 class MobotixConfig:
+    """
+    Holds the items that make up a Mobotix Camera configuration file
+    Lines beginning with a # are comments and are not included in this
+    Note: That means that comments may be lost when we write back
+    the configuration file.
+    """
     def __init__(self, data):
         self.sections = []
         self.parse_config(data)
