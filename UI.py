@@ -21,13 +21,14 @@ class MobotixLoader(QThread):
 
 class Example(QMainWindow):
 
-    def __init__(self, mobotix_cam):
+    def __init__(self, mobotix_cam, mobotix_config):
         super(Example, self).__init__()
 
         self.timer = None  # type: QTimer
         self.imageLabel = None
         self.scrollArea = None
         self.mobotix_cam = mobotix_cam
+        self.config = mobotix_config
         self.mobotix_loader = MobotixLoader(self.mobotix_cam)
         self.mobotix_loader.signal.sig.connect(self.load)
 
@@ -76,6 +77,7 @@ class Example(QMainWindow):
         painter = QPainter()
         painter.begin(image)
         painter.drawEllipse(100, 100, 100, 50)
+        painter.drawRect(self.config.sections['events'].items['AS'].activity_area[1:])
         painter.end()
 
         self.imageLabel.setPixmap(QPixmap.fromImage(image))
@@ -90,8 +92,9 @@ class Example(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    # ex = Example(Mobotix.MobotixCam())
-    ex = Example(Mobotix.MobotixCam("184.183.156.98:39"))
+    cam = Mobotix.MobotixCam()
+    cfg = Mobotix.MobotixConfig(cam.get_config().decode('utf-8'))
+    ex = Example(cam, cfg)
     ex.run()
     sys.exit(app.exec_())
 

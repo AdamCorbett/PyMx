@@ -2,12 +2,36 @@ import urllib.request
 from pprint import pprint
 
 
+class MobotixConfigEventProfile:
+    def __init__(self):
+        self.type = ''
+        self.profilename = ''
+        self.profilestate = ''
+        self.ima_dead = '5'
+        self.ima_sense = 'as'
+        self.activity_level = ''
+        self.activity_area = [0, 95, 22, 1078, 805]
+        self.activity_directions = 'Left;Right;Up;Down'
+        self.ot_type = 'corridor'
+        self.vmlist = ''
+        self.default_width = 1280
+        self.default_height = 960
+
+    def set_from_config(self, line):
+        params = line.split(':')
+        param_type = params.pop(0)
+        self.type, v = param_type.split('=')
+        if self.type == 'ima':
+            param_dict = dict(s.split('=') for s in params)
+            self.profilename = param_dict['_profilename']
+            self.ima_dead = param_dict.get('ima_dead', '')
+            self.ima_sense = param_dict.get('ima_sense', '')
+            self.activity_level = param_dict.get('activity_level', '')
+            self.activity_area = param_dict.get('activity_area', []).split(',')
+            self.activity_directions = param_dict.get('activity_directions', '')
+
+
 class MobotixConfigSection:
-    """
-    Defines a section from a Mobotix camera configuration file
-    Each section is a key=value pair
-    This version currently does not handle the JSON sections.
-    """
     def __init__(self, name, items):
         self.name = name.strip()
         self.items = {}
@@ -15,19 +39,18 @@ class MobotixConfigSection:
             self.items = items
         else:
             for item in items:
-                k, v = item.split('=', 1)
-                self.items[k] = v
+                if self.name == 'events':
+                    mxevent = MobotixConfigEventProfile()
+                    mxevent.set_from_config(item)
+                    self.items[mxevent.profilename] = mxevent
+                else:
+                    k, v = item.split('=', 1)
+                    self.items[k] = v
 
 
 class MobotixConfig:
-    """
-    Holds the items that make up a Mobotix Camera configuration file
-    Lines beginning with a # are comments and are not included in this
-    Note: That means that comments may be lost when we write back
-    the configuration file.
-    """
     def __init__(self, data):
-        self.sections = []
+        self.sections = {}
         self.parse_config(data)
 
     def parse_config(self, data):
@@ -39,7 +62,7 @@ class MobotixConfig:
                 if words[0] == "SECTION":
                     section_name = words[1]
                 elif words[0] == "ENDSECTION":
-                    self.sections.append(MobotixConfigSection(section_name, items))
+                    self.sections[section_name] = MobotixConfigSection(section_name, items)
                     items = []
                 else:
                     items.append(line)
@@ -65,7 +88,7 @@ class MobotixCam:
     def get_config(self):
         data = "\n"
         data += "helo\n"
-        data += "view configfile\n"
+        data += "view section events\n"
         data += "quit\n"
 
         data = bytes(data.encode("ascii"))
@@ -81,11 +104,9 @@ class MobotixCam:
 
 if __name__ == '__main__':
     # M = MobotixCam("127.0.0.1:8001")
-    M = MobotixCam("184.183.156.98:39")
-    # M = MobotixCam()
+    # M = MobotixCam("184.183.156.98:39")
+    M = MobotixCam()
     cfg = MobotixConfig(M.get_config().decode('utf-8'))
     # print(cfg.decode('utf-8'))
-    for section in cfg.sections:
-        pprint(section.name)
-        pprint(section.items)
-        pprint("-------------------------")
+
+    pprint(cfg.sections['events'].items['AS'].__dict__)
