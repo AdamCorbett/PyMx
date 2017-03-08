@@ -103,8 +103,6 @@ class MobotixCam:
 
 
 if __name__ == '__main__':
-    # M = MobotixCam("127.0.0.1:8001")
-    # M = MobotixCam("184.183.156.98:39")
     M = MobotixCam()
     cfg = MobotixConfig(M.get_config().decode('utf-8'))
     # print(cfg.decode('utf-8'))
