@@ -77,7 +77,13 @@ class Example(QMainWindow):
         painter = QPainter()
         painter.begin(image)
         painter.drawEllipse(100, 100, 100, 50)
-        painter.drawRect(self.config.sections['events'].items['AS'].activity_area[1:])
+        rect = self.config.sections['events'].items['AS'].activity_area[1:]
+        imgsize = self.size()
+        rect[0] = rect[0] * imgsize.width() / 1280
+        rect[1] = rect[1] * imgsize.height() / 960
+        rect[2] = rect[2] * imgsize.width() / 1280
+        rect[3] = rect[3] * imgsize.height() / 960
+        painter.drawRect(*rect)
         painter.end()
 
         self.imageLabel.setPixmap(QPixmap.fromImage(image))

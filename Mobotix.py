@@ -27,7 +27,7 @@ class MobotixConfigEventProfile:
             self.ima_dead = param_dict.get('ima_dead', '')
             self.ima_sense = param_dict.get('ima_sense', '')
             self.activity_level = param_dict.get('activity_level', '')
-            self.activity_area = param_dict.get('activity_area', []).split(',')
+            self.activity_area = [int(x) for x in param_dict.get('activity_area', []).split(',')]
             self.activity_directions = param_dict.get('activity_directions', '')
 
 
