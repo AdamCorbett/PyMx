@@ -10,7 +10,7 @@ class MobotixConfigEventProfile:
         self.ima_dead = '5'
         self.ima_sense = 'as'
         self.activity_level = ''
-        self.activity_area = [0, 95, 22, 1078, 805]
+        self.activity_area = [0, 0, 0, 1280, 960]
         self.activity_directions = 'Left;Right;Up;Down'
         self.ot_type = 'corridor'
         self.vmlist = ''
@@ -27,7 +27,7 @@ class MobotixConfigEventProfile:
             self.ima_dead = param_dict.get('ima_dead', '')
             self.ima_sense = param_dict.get('ima_sense', '')
             self.activity_level = param_dict.get('activity_level', '')
-            self.activity_area = [int(x) for x in param_dict.get('activity_area', []).split(',')]
+            self.activity_area = [int(x) for x in param_dict.get('activity_area', '').split(',')]
             self.activity_directions = param_dict.get('activity_directions', '')
 
 
@@ -83,12 +83,11 @@ class MobotixCam:
         self.image_path = "http://{0}/cgi-bin/image.jpg?size={1}&quality=90"
         self.config_path = "http://{0}/admin/remoteconfig"
         self.image_data = None
-        # self.get_image()
 
-    def get_config(self):
+    def get_config_section(self, section="events"):
         data = "\n"
         data += "helo\n"
-        data += "view section events\n"
+        data += "view section {}\n".format(section)
         data += "quit\n"
 
         data = bytes(data.encode("ascii"))
@@ -104,7 +103,6 @@ class MobotixCam:
 
 if __name__ == '__main__':
     M = MobotixCam()
-    cfg = MobotixConfig(M.get_config().decode('utf-8'))
-    # print(cfg.decode('utf-8'))
+    # cfg = MobotixConfig(M.get_config_section('events').decode('utf-8'))
+    print(M.get_config_section('mail').decode('utf-8'))
 
-    pprint(cfg.sections['events'].items['AS'].__dict__)
