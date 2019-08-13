@@ -69,7 +69,7 @@ class MobotixConfig:
 
 
 class MobotixCam:
-    def __init__(self, ip="192.168.10.40",
+    def __init__(self, ip="192.168.0.10",
                  username="admin", password="meinsm"):
         self.ip = ip
         self.url = "http://{0}/".format(ip)
@@ -84,12 +84,21 @@ class MobotixCam:
         self.config_path = "http://{0}/admin/remoteconfig"
         self.image_data = None
 
+    def get_all_config(self):
+        data = "\n"
+        data += "helo\n"
+        data += "view configfile\n"
+        data += "quit\n"
+        return self._get_config(data)
+
     def get_config_section(self, section="events"):
         data = "\n"
         data += "helo\n"
         data += "view section {}\n".format(section)
         data += "quit\n"
+        return self._get_config(data)
 
+    def _get_config(self, data):
         data = bytes(data.encode("ascii"))
         handler = self.opener.open(self.config_path.format(self.ip), data=data)
         return handler.read()
@@ -104,5 +113,5 @@ class MobotixCam:
 if __name__ == '__main__':
     M = MobotixCam()
     # cfg = MobotixConfig(M.get_config_section('events').decode('utf-8'))
-    print(M.get_config_section('mail').decode('utf-8'))
+    print(M.get_all_config().decode('utf-8'))
 
