@@ -67,6 +67,9 @@ class Configuration:
         return section_name, items
 
     @staticmethod
-    def config_string(text):
+    def string_encode(text):
         return urllib.parse.quote(text)
 
+    @staticmethod
+    def string_decode(text):
+        return urllib.parse.unquote(text)

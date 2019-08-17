@@ -36,7 +36,6 @@ class EmailSettings:
         self.parseconfig()
 
     def parseconfig(self):
-        pass
         for item in self.config_data:
             # Split Item into Key: Value
             # If Key is "Profile" create a new Profile
