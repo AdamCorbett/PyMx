@@ -50,10 +50,11 @@ class Ima:
         :param event:
         :return:
         """
-        activity_text = ""
+        areas = []
         area: ActivityArea
         for area in event.activity_areas:
-            activity_text += area.to_config_line()
+            areas.append(area.to_config_line())
+        activity_text = Configuration.string_encode("\n".join(areas))
 
         output = (f"{event.type}={event.profile}:_profilename={event._profilename}:_profilestate={event._profilestate}:"
                   f"ima_dead={event.ima_dead}:ima_sens={event.ima_sens}:activity_level:{event.activity_level}:"

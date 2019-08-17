@@ -68,7 +68,7 @@ class Configuration:
 
     @staticmethod
     def string_encode(text):
-        return urllib.parse.quote(text)
+        return urllib.parse.quote(text, safe=",=/")
 
     @staticmethod
     def string_decode(text):
