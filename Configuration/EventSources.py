@@ -37,7 +37,7 @@ class EventSources:
             if k == "env":
                 self.events.append(Env(item))
             if k == "ima":
-                self.events.append(Ima(item))
+                self.events.append(Ima.create_from_config(item))
             if k == "sig":
                 self.events.append(Sig(item))
             if k == "tim":
@@ -47,5 +47,8 @@ class EventSources:
         output = "Configuration data for {0}\n".format(self.section_name)
         output += "Event Profiles: {0}\n".format(len(self.events))
         for event in self.events:
-            output += "\t{}\n".format(event)
+            if event.type == "ima":
+                output += "\t{}\n".format(Ima.to_config_line(event))
+            else:
+                output += "\t{}\n".format(event)
         return output

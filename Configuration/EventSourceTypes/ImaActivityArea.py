@@ -23,6 +23,15 @@ class ActivityArea:
             self.width = values[3]
             self.height = values[4]
 
+    def to_config_line(self):
+        if len(self.poly) == 0:
+            return "{0},{1},{2},{3},{4}".format(self.camera, self.x, self.y, self.width, self.height)
+        else:
+            points = []
+            for point in self.poly:
+                points.append("{0}x{1}".format(point[0], point[1]))
+            return "{0},poly={1}".format(self.camera, "/".join(points))
+
     def __repr__(self):
         if len(self.poly) == 0:
             return "{0}: ({1}, {2}), ({3}, {4})".format(self.camera, self.x, self.y, self.width, self.height)
