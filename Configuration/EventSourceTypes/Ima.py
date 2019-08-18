@@ -45,10 +45,10 @@ class Ima:
     @staticmethod
     def to_config_line(event):
         """
-
+        Compose appropriate Configfile line for this EventSource
         :type event: Ima
         :param event:
-        :return:
+        :return: Mobotix Camera Configuration line item for "events" section
         """
         areas = []
         area: ActivityArea
