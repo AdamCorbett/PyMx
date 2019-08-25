@@ -17,6 +17,14 @@ class Configuration:
         self.camera = camera
         self.remote_config_path = Configuration.remote_config_path_wrapper.format(self.camera.ip)
 
+    def get_help(self):
+        """
+        Load entire Config File from camera
+        :return: Configuration Data
+        """
+        data = Configuration.remote_config_wrapper.format("help")
+        return self._get_config(data)
+
     def get_all_config(self):
         """
         Load entire Config File from camera
